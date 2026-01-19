@@ -3,25 +3,21 @@
     <h1>Characters</h1>
 
     <div class="characters_inner">
-      <characterCard :character="characters[0]"/>
+      <CharacterCard 
+        v-for="(character, index) in characters" 
+        :key="character.name + index" :name="character.name" :image="character.image" :species="character.species" />
 
-      <characterCard
-        v-for="(character, index) in characters.slice(1)"
-        :key="index"
-        :character="character"
-        />
-
-  </div>
+    </div>
   </div>
 
 </template>
 <script setup>
-import characterCard from "../components/characterCard.vue";
+import CharacterCard from "../components/CharacterCard.vue";
 
 const characters = [
-  {name:"Rick Sanchez", image:"public/rick.png", species:"Human"},
-  {name:"Morty Smith", image:"public/morty.png", species:"Human"},
-  {name:"Jerry Smith", image:"public/Jerry.png", species:"Human"}
+  { name: "Rick Sanchez", image: "public/rick.png", species: "Human" },
+  { name: "Morty Smith", image: "public/morty.png", species: "Human" },
+  { name: "Jerry Smith", image: "public/Jerry.png", species: "Human" }
 ];
 </script>
 
@@ -31,6 +27,4 @@ const characters = [
   grid-template-columns: repeat(5, 2fr);
   gap: 30px;
 }
-
-
 </style>

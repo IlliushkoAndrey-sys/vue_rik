@@ -1,17 +1,28 @@
 <template>
   <div class="character_card">
     <div class="character_image">
-      <img :src="character.image" :alt="character.name">
+      <img :src="props.image" :alt="props.name">
 
     </div>
-    <div class="character_name">{{character.name}}</div>
-    <div class ="character_type">{{character.species}}</div>
+    <div class="character_name">{{props.name}}</div>
+    <div class ="character_type">{{props.species}}</div>
   </div>
 </template>
 
 <script setup>
-defineProps({
-  character: Object
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    default: '/public/rick.png',
+  },
+  species: {
+    type: String,
+    required: true,
+  },
 })
 
 </script>
