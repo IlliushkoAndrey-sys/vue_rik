@@ -39,12 +39,6 @@ const links = [
 
 function toggleMenu() {
   isOpen.value = !isOpen.value;
-
-  if (isOpen.value) {
-    document.body.classList.add('menu-open');
-  } else {
-    document.body.classList.remove('menu-open');
-  }
 }
 
 function closeMenu() {
@@ -64,6 +58,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', handleEsc);
 });
+
+
 </script>
 <style>
 
