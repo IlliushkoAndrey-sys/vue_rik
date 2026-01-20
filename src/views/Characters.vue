@@ -19,6 +19,7 @@ const characters = [
   { name: "Morty Smith", image: "public/morty.png", species: "Human" },
   { name: "Jerry Smith", image: "public/Jerry.png", species: "Human" }
 ];
+
 </script>
 
 <style>
