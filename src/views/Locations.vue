@@ -1,18 +1,23 @@
-<script >
+<script setup >
+import { ref, computed, watch } from 'vue';
 
-export default {
-  data() {
-    return {
-      city: 'Чернігів',
-      adress: 'Вулиця'
-    }
-  },
-  computed:{
-    cityPlusCountry() {
-      return this.city + " ,Україна";
-    }
-  }
-}
+const city = ref('Чернігів');
+const adress = ref('Вулиця');
+const inputValue = ref('')
+const oldValue = ref('Старе значення')
+const newValue = ref('Нове значення')
+
+watch(inputValue, (newVal, oldVal) => {
+  oldValue.value = oldVal
+  newValue.value = newVal
+});
+let watchValue = computed(() => {
+  return `було ${oldValue.value} стало ${newValue.value}`
+})
+
+let cityPlusCountry= computed(() => {
+  return city.value + " ,Україна";
+});
 </script>
 
 <template>
@@ -22,6 +27,8 @@ export default {
     <span>{{cityPlusCountry}}</span>
     <input class="input" v-model.lazy="adress" type="text" placeholder="Введіть Вулицю">
     <span>{{adress+" ,"+cityPlusCountry}}</span>
+    <input class="input" v-model.lazy="inputValue" type="text">
+    <span>{{watchValue}}</span>
 
   </div>
 </template>
