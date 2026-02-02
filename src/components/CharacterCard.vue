@@ -38,6 +38,11 @@ const props = defineProps({
   background: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4)
 }
+
+.character_card:hover {
+  background: #4CAF50;
+  color: white;
+}
 .character_name {
   text-align: center;
   padding-top: 10px;
