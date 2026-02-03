@@ -24,11 +24,11 @@ const inputPage = computed({
 })
 
 const startPage = computed(() =>
-  Math.max(currentPage.value -1, 2)
+    Math.max(currentPage.value - 1, 2)
 )
 
 const endPage = computed(() =>
-  Math.min(currentPage.value + 1, props.totalPages - 1)
+    Math.min(currentPage.value + 1, props.totalPages - 1)
 )
 
 const pages = computed(() => {
@@ -42,6 +42,7 @@ const pages = computed(() => {
 function changePage(page) {
   currentPage.value = page;
 }
+
 function goToInputPage() {
   currentPage.value = inputPage.value
 }
@@ -49,60 +50,62 @@ function goToInputPage() {
 </script>
 
 <template>
-<div class="pagination">
-  <button
-    :disabled="currentPage === 1"
-    @click="changePage(currentPage-1)"
-  >
-    Prev
-  </button>
+  <div class="pagination">
+    <div class="pagination_firtCollumn">
+      <button
+          :disabled="currentPage === 1"
+          @click="changePage(currentPage-1)"
+      >
+        Prev
+      </button>
 
-<button
-  :class="{ active: currentPage === 1}"
-  @click="changePage(1)"
->
-  1
-</button>
+      <button
+          :class="{ active: currentPage === 1}"
+          @click="changePage(1)"
+      >
+        1
+      </button>
 
-  <span v-if="startPage > 2">...</span>
+      <span v-if="startPage > 2">...</span>
 
-  <button
-    v-for="page in pages"
-    :key="page"
-    :class="{ active: currentPage=== page}"
-    @click="changePage(page)"
-  >
-    {{ page }}
-  </button>
+      <button
+          v-for="page in pages"
+          :key="page"
+          :class="{ active: currentPage=== page}"
+          @click="changePage(page)"
+      >
+        {{ page }}
+      </button>
 
-  <span v-if="endPage < totalPages - 1">...</span>
+      <span v-if="endPage < totalPages - 1">...</span>
 
-  <button
-    v-if="totalPages > 1"
-    :class="{ active: currentPage === totalPages}"
-    @click="changePage(totalPages)"
-  >
-    {{totalPages}}
-  </button>
+      <button
+          v-if="totalPages > 1"
+          :class="{ active: currentPage === totalPages}"
+          @click="changePage(totalPages)"
+      >
+        {{ totalPages }}
+      </button>
 
-  <button
-    :disabled="currentPage === totalPages"
-    @click="changePage(currentPage + 1)"
-  >
-    Next
-  </button>
-<div class="">
-  <input
-    type="number"
-    v-model.number="inputPage"
-    @keydown.enter="goToInputPage"
-    :min="1"
-    :max="totalPages"
-    placeholder="Page"
-    />
-  <button @click="goToInputPage">Go</button>
-</div>
-</div>
+      <button
+          :disabled="currentPage === totalPages"
+          @click="changePage(currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
+    <div class="pagination_secondCollumn">
+      <input
+          type="number"
+          v-model.number="inputPage"
+          @keydown.enter="goToInputPage"
+          :min="1"
+          :max="totalPages"
+          placeholder="Page"
+      />
+      <button @click="goToInputPage">Go</button>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -111,8 +114,13 @@ function goToInputPage() {
 .pagination {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+
   padding: 30px 0;
   text-align: center;
+}
+.pagination_firtCollumn {
+  padding-bottom: 10px;
 }
 
 .pagination button {
@@ -126,9 +134,7 @@ function goToInputPage() {
   cursor: pointer;
 }
 
-.pagination>span{
-  
-}
+
 
 .pagination button:hover {
   background-color: #4CAF50;
@@ -176,6 +182,7 @@ input::-webkit-inner-spin-button {
   margin: 0 2px;
 
 }
+
 .pagination button.active {
   background-color: #4CAF50;
   color: #fff;

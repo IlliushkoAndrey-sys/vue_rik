@@ -9,6 +9,7 @@
           type="text"
           placeholder="Character Name"
           v-model="searchQuery"
+          @input="onSearchInput"
       />
     </div>
     </div>
@@ -36,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import CharacterCard from '../components/CharacterCard.vue'
 import Pagination from '../components/Pagination.vue'
@@ -49,17 +50,18 @@ const totalPages = computed(() => store.getters['characters/getTotalPages'])
 const currentPage = computed(() => store.state.characters.currentPage)
 
 // Пошуковий запит з debounce
-const searchQuery = ref(store.state.characters.search)
+const searchQuery = ref("")
 let debounceTimer = null
 
-watch(searchQuery, (val) => {
+function onSearchInput() {
   clearTimeout(debounceTimer)
+
   debounceTimer = setTimeout(() => {
-    store.commit('characters/setSearch', val.trim())
+    store.commit('characters/setSearch', searchQuery.value.trim())
     store.commit('characters/setCurrentPage', 1)
     store.dispatch('characters/fetchCharacters')
-  }, 500) // чекаємо 500ms після останнього введення
-})
+  },500)
+}
 
 // Зміна сторінки
 function changePage(page) {
@@ -68,7 +70,9 @@ function changePage(page) {
 }
 
 // Fetch першої сторінки при завантаженні
-store.dispatch('characters/fetchCharacters')
+onMounted(() => {
+  store.dispatch('characters/fetchCharacters')
+})
 </script>
 
 <style scoped>
