@@ -6,10 +6,8 @@ const moduleCharacters = {
         characters: new Map(),
         loading: false,
         totalCharacters: 0,
-        currentPage: 1,
         perPage: 10,
         apiPerPage: 20,
-        search: ""
     }),
 
     mutations: {
@@ -21,24 +19,29 @@ const moduleCharacters = {
             state.characters = map
         },
 
-        setCurrentPage(state, page) { state.currentPage = page },
         setTotalCharacters(state, total) { state.totalCharacters = total },
         setCache(state, { apiPage, searchKey, data }) {
             state.charactersCache.set(`${apiPage}_${searchKey}`, data)
         },
-        setSearch(state, value) { state.search = value }
+        clearCache(state) {
+            state.charactersCache.clear()
+        }
     },
 
     actions: {
-        async fetchCharacters({ state, commit }) {
+
+        async fetchCharacters({ state, commit },{page= 1, search = ''}) {
             commit('setLoading', true)
 
-            const uiPage = state.currentPage
+            if (page === 1) {
+                commit('clearCache')
+            }
+
             const perPage = state.perPage
             const apiPerPage = state.apiPerPage
-            const searchKey = state.search ? encodeURIComponent(state.search) : ''
+            const searchKey = search ? encodeURIComponent(search) : ''
 
-            const neededApiPage = Math.ceil((uiPage * perPage) / apiPerPage)
+            const neededApiPage = Math.ceil((page * perPage) / apiPerPage)
 
             const cacheKey = `${neededApiPage}_${searchKey}`
 
@@ -56,11 +59,29 @@ const moduleCharacters = {
 
             const apiData = state.charactersCache.get(cacheKey) || []
 
-            const start = ((uiPage - 1) * perPage) % apiPerPage
+            const start = ((page - 1) * perPage) % apiPerPage
             const end = start + perPage
 
             commit('setCharacters', apiData.slice(start, end))
             commit('setLoading', false)
+        },
+
+        async fetchCharacterById({ state, commit }, id) {
+            if(state.characters.has(id)) return
+
+            try {
+                const res = await fetch(
+                    `https://rickandmortyapi.com/api/character/${id}`,
+                )
+                const data = await res.json()
+
+                commit('setCharacters', [
+                    ...state.characters.values(),
+                    data
+                ])
+            } catch (e) {
+                console.error('Failed to fetch character', id)
+            }
         }
     },
 

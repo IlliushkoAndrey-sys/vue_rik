@@ -1,21 +1,48 @@
-<script setup>
-import { ref, watch } from 'vue'
+<script setup >
+import { ref, computed, watch } from 'vue';
 
-const search = ref('')
-let timer = null
+const city = ref('Чернігів');
+const adress = ref('Вулиця');
+const inputValue = ref('')
+const oldValue = ref('Старе значення')
+const newValue = ref('Нове значення')
 
-watch(search, (newVal) => {
-  clearTimeout(timer)
-  timer = setTimeout(() => {
-    fakeRequest(newVal)
-  }, 500)  // через 500мс викликати fakeRequest(newVal)
+watch(inputValue, (newVal, oldVal) => {
+  oldValue.value = oldVal
+  newValue.value = newVal
+});
+let watchValue = computed(() => {
+  return `було ${oldValue.value} стало ${newValue.value}`
 })
 
-function fakeRequest(query) {
-  console.log('Запит до API з:', query)
-}
+let cityPlusCountry= computed(() => {
+  return city.value + " ,Україна";
+});
 </script>
 
 <template>
-  <input v-model="search" placeholder="Пошук..." />
+  <div class="container">
+    <input v-bind:value="city" @input="city = $event.target.value" class="input" type="text" >
+    <span>{{city}}</span>
+    <span>{{cityPlusCountry}}</span>
+    <input class="input" v-model.lazy="adress" type="text" placeholder="Введіть Вулицю">
+    <span>{{adress+" ,"+cityPlusCountry}}</span>
+    <input class="input" v-model.lazy="inputValue" type="text">
+    <span>{{watchValue}}</span>
+
+  </div>
 </template>
+
+<style scoped>
+.input {
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+span {
+  display: block;
+  margin-top: 15px;
+}
+
+</style>

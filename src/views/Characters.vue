@@ -38,41 +38,69 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import { useStore } from 'vuex'
 import CharacterCard from '../components/CharacterCard.vue'
 import Pagination from '../components/Pagination.vue'
 
 const store = useStore()
+const router = useRouter()
+const route = useRoute()
+
+const currentPage = ref(Number(route.query.page) ||1)
+const searchQuery = ref(route.query.search ||'')
 
 const characters = computed(() => store.getters['characters/getCharactersArray'])
 const loading = computed(() => store.getters['characters/getIsLoading'])
 const totalPages = computed(() => store.getters['characters/getTotalPages'])
-const currentPage = computed(() => store.state.characters.currentPage)
+
 
 // Пошуковий запит з debounce
-const searchQuery = ref("")
 let debounceTimer = null
 
 function onSearchInput() {
   clearTimeout(debounceTimer)
-
   debounceTimer = setTimeout(() => {
-    store.commit('characters/setSearch', searchQuery.value.trim())
-    store.commit('characters/setCurrentPage', 1)
-    store.dispatch('characters/fetchCharacters')
-  },500)
+    currentPage.value = 1
+
+    router.push({
+      query: {
+        page: 1,
+        ...(searchQuery.value ? { search: searchQuery.value } : {})
+      }
+    })
+
+    store.dispatch('characters/fetchCharacters', {
+      page: 1,
+      search: searchQuery.value
+    })
+  }, 500)
 }
 
-// Зміна сторінки
 function changePage(page) {
-  store.commit('characters/setCurrentPage', page)
-  store.dispatch('characters/fetchCharacters')
+  currentPage.value = page
+
+  router.push({
+    query: {
+      page,
+      ...(searchQuery.value ? { search: searchQuery.value } : {})
+    }
+  })
+
+  store.dispatch('characters/fetchCharacters', {
+    page,
+    search: searchQuery.value
+  })
 }
 
 // Fetch першої сторінки при завантаженні
 onMounted(() => {
-  store.dispatch('characters/fetchCharacters')
+  store.dispatch('characters/fetchCharacters', {
+    page: currentPage.value,
+    search: searchQuery.value
+  })
 })
+
 </script>
 
 <style scoped>
