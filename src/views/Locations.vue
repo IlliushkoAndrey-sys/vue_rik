@@ -84,7 +84,7 @@ onMounted(() => {
           v-for="location in locations"
           :key="location.id"
           :name="location.name"
-          :residents="location.residents"
+          :residentsId="location.residents[0] ? Number(location.residents[0].split('/').pop()) : null"
           :type="location.type"
       />
     </div>

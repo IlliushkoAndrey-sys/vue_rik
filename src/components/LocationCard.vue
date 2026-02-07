@@ -9,9 +9,9 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  residents: {
-    type: Array,
-    default: () => [],
+  residentsId: {
+    type: Number,
+    default: null,
   },
   type: {
     type: String,
@@ -20,16 +20,15 @@ const props = defineProps({
 })
 
 const residentImage = computed(() => {
-  if(!props.residents.length) {
+  if(!props.residentsId) {
     return '/public/rick.png'
   }
 
-  const id = Number(props.residents[0].split('/').pop())
 
-  const image = store.getters['characters/getImageById'](id)
+  const image = store.getters['characters/getImageById'](props.residentsId)
 
   if(!image) {
-    store.dispatch('characters/fetchCharacterById', id)
+    store.dispatch('characters/fetchCharacterById', props.residentsId)
   }
 
   return image || '/public/rick.png'
