@@ -25,7 +25,6 @@ const characterImage = computed(() => {
     return '/public/rick.png'
   }
 
-  // const id = Number(props.residents[0].split('/').pop())
 
   const image = store.getters['characters/getImageById'](props.charactersId)
 
@@ -79,4 +78,16 @@ const characterImage = computed(() => {
   font-size: 13px;
   color: #999;
 }
+
+@media (max-width: 1024px ) {
+  .season_smallcard {
+    height: 100%;
+  }
+}
+@media (max-width: 500px) {
+  .season_smallcard {
+    height: 100%;
+  }
+}
+
 </style>

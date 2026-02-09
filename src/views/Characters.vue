@@ -139,4 +139,39 @@ onMounted(() => {
   border-radius: 5px;
   border: 1px solid #999;
 }
+
+@media (max-width: 1024px) {
+  .characters_inner {
+    display: grid;
+    grid-template-columns: repeat(3, 2fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .container {
+    padding: 10px;
+    height: 1400px;
+  }
+
+}
+@media (max-width: 500px) {
+
+  .container {
+    padding: 10px;
+    height: 1800px;
+  }
+  .characters_inner {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .charactersPlusFinder {
+    display: flex;
+    flex-direction: column;
+
+  }
+  h1 {
+    padding-bottom: 10px;
+  }
+}
 </style>

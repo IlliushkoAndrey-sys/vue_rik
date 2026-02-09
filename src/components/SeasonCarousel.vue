@@ -1,7 +1,7 @@
 <script setup>
 import EpisodeCard from '@/components/EpisodeCard.vue'
 import useEmblaCarousel from 'embla-carousel-vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,computed } from 'vue'
 
 defineProps({
   episodes: {
@@ -52,9 +52,7 @@ onMounted(() => {
               :name="episode.name"
               :air_date="episode.air_date"
               :characters-id="
-              episode.characters?.length
-                ? Number(episode.characters[0].split('/').pop())
-                : null
+              episode.characters?.length ? Number(episode.characters[Math.floor((Math.random()+5)+Math.random())].split('/').pop()) : null
             "
           />
         </div>
@@ -123,5 +121,60 @@ onMounted(() => {
 .embla__next {
   right: -40px;
   border-radius: 50%;
+}
+@media (max-width: 1024px) {
+  .embla {
+    position: relative;
+  }
+
+  .embla__viewport {
+    overflow: hidden;
+  }
+
+  .embla__container {
+    display: flex;
+  }
+
+  .embla__slide {
+    flex: 0 0 auto;
+    width: 242px;
+    padding-right: 20px;
+  }
+  .embla__slide:last-child {
+    padding-right: 0;
+    width: 222px;
+  }
+  .embla__prev {
+    left: -25px;
+    border-radius: 50%;
+
+  }
+  .embla__next {
+    right: -25px;
+    border-radius: 50%;
+  }
+
+
+
+}
+@media (max-width: 500px) {
+  .embla__slide {
+    flex: 0 0 auto;
+    width: 326px;
+    padding-right: 20px;
+  }
+  .embla__slide:last-child {
+    padding-right: 0;
+    width: 306px;
+  }
+  .embla__prev {
+    left: -25px;
+    border-radius: 50%;
+
+  }
+  .embla__next {
+    right: -25px;
+    border-radius: 50%;
+  }
 }
 </style>

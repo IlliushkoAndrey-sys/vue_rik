@@ -87,14 +87,12 @@ onBeforeUnmount(() => {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: anchor-center;
   padding: 50px 0;
 
 }
 
-.finder-inner {
-  display: flex;
-}
+
 
 /*Navigation*/
 
@@ -161,4 +159,9 @@ onBeforeUnmount(() => {
 
 }
 
+@media (max-width: 1024px) {
+  .header {
+    padding: 10px;
+  }
+}
 </style>

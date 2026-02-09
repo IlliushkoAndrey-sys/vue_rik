@@ -10,18 +10,14 @@ const searchQuery = ref('');
 
 
 
-// Завантажуємо епізоди
 onMounted(() => {
   store.dispatch('episodes/fetchAllEpisodes');
 });
 
-// loading зі стору
 const loading = computed(() => store.state.episodes.loading);
 
-// сезони зі стору (getter)
 const seasons = computed(() => store.getters['episodes/seasons']);
 
-// фільтрація епізодів у сезоні
 const filterEpisodes = (episodes) => {
   if (!searchQuery.value) return episodes;
   return episodes.filter(ep =>
@@ -53,7 +49,6 @@ const filterEpisodes = (episodes) => {
         <template v-if="filterEpisodes(episodes).length">
           <h2>Season {{ season }}</h2>
 
-          <!-- ✅ КОЖЕН СЕЗОН = СВОЯ КАРУСЕЛЬ -->
           <SeasonCarousel :episodes="filterEpisodes(episodes)" />
         </template>
       </section>
@@ -91,5 +86,29 @@ const filterEpisodes = (episodes) => {
 .footer {
 margin-top: 40px;
 }
+@media (max-width: 1024px) {
 
+  .container {
+    padding: 30px;
+  }
+
+}
+@media (max-width: 500px) {
+  .season {
+    padding: 20px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .episodesPlusFinder {
+    display: flex;
+    flex-direction: column;
+
+  }
+  h1 {
+    padding-bottom: 10px;
+  }
+}
 </style>
