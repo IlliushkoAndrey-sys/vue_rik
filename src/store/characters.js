@@ -18,6 +18,9 @@ const moduleCharacters = {
             charactersArray.forEach(c => map.set(c.id, c))
             state.characters = map
         },
+        setCharacter(state, character) {
+            state.characters.set(character.id, character)
+        },
 
         setTotalCharacters(state, total) { state.totalCharacters = total },
         setCache(state, { apiPage, searchKey, data }) {
@@ -67,21 +70,16 @@ const moduleCharacters = {
         },
 
         async fetchCharacterById({ state, commit }, id) {
-            if(state.characters.has(id)) return
-
-            try {
-                const res = await fetch(
-                    `https://rickandmortyapi.com/api/character/${id}`,
-                )
-                const data = await res.json()
-
-                commit('setCharacters', [
-                    ...state.characters.values(),
-                    data
-                ])
-            } catch (e) {
-                console.error('Failed to fetch character', id)
+            if (state.characters[id]) {
+                return state.characters[id]
             }
+
+            const res = await fetch(`https://rickandmortyapi.com/api/character/${id}`)
+            const data = await res.json()
+
+            commit('setCharacter', data)
+
+            return data
         }
     },
 

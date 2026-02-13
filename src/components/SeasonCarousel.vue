@@ -2,6 +2,8 @@
 import EpisodeCard from '@/components/EpisodeCard.vue'
 import useEmblaCarousel from 'embla-carousel-vue'
 import { ref, onMounted,computed } from 'vue'
+import LazyWrapper from '@/components/LazyWrapper.vue'
+
 
 defineProps({
   episodes: {
@@ -48,13 +50,17 @@ onMounted(() => {
             :key="episode.id"
             class="embla__slide"
         >
-          <EpisodeCard
-              :name="episode.name"
-              :air_date="episode.air_date"
-              :characters-id="
-              episode.characters?.length ? Number(episode.characters[Math.floor((Math.random()+5)+Math.random())].split('/').pop()) : null
-            "
-          />
+          <LazyWrapper :root="emblaRef">
+            <EpisodeCard
+                :name="episode.name"
+                :air_date="episode.air_date"
+                :characters-id="episode.characters?.length ? Number(episode.characters[Math.floor(Math.random() * episode.characters.length)
+            ].split('/').pop()
+          )
+        : null
+    "
+            />
+          </LazyWrapper>
         </div>
       </div>
     </div>

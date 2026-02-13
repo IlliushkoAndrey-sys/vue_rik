@@ -1,9 +1,9 @@
 <script setup>
-import dayjs from "dayjs";
-import {computed} from 'vue'
-import {useStore} from 'vuex'
+import { ref, onMounted } from 'vue';
+import dayjs from 'dayjs';
+import { useStore } from 'vuex';
 
-const store = useStore()
+const store = useStore();
 
 const props = defineProps({
   name: {
@@ -12,34 +12,33 @@ const props = defineProps({
   },
   charactersId: {
     type: Number,
-    default: null    ,
+    default: null,
   },
   air_date: {
     type: String,
     required: true,
   },
-})
+});
 
-const characterImage = computed(() => {
-  if(!props.charactersId) {
-    return '/public/rick.png'
-  }
+const characterImage = ref('/public/rick.png');
 
+onMounted(async () => {
+  if (!props.charactersId) return
 
-  const image = store.getters['characters/getImageById'](props.charactersId)
+  const character = await store.dispatch(
+      'characters/fetchCharacterById',
+      props.charactersId
+  )
 
-  if(!image) {
-    store.dispatch('characters/fetchCharacterById', props.charactersId)
-  }
+  characterImage.value = character?.image || '/rick.png'
+});
 
-  return image || '/public/rick.png'
-})
 </script>
 
 <template>
   <div class="season_smallcard">
   <div class="smallcard_image">
-    <img :src="characterImage" :alt="props.name">
+    <img v-lazy="characterImage" :alt="props.name">
   </div>
   <div class="smallcard_title">{{props.name}}</div>
     <div class="smallcard_text">
