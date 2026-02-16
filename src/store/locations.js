@@ -18,6 +18,10 @@ const moduleLocations = {
             locationsArray.forEach(location => map.set(location.id, location))
             state.locations = map
         },
+        setLocation(state, location) {
+            state.locations.set(location.id, location)
+        },
+
         setTotalLocations(state, total) {state.totalLocations = total},
         setCache(state, { apiPage, searchKey, data })  {
             state.locationsCache.set(`${apiPage}_${searchKey}`, data)
@@ -64,7 +68,21 @@ const moduleLocations = {
 
             commit('setLocations', apiData.slice(start, end))
             commit('setLoading', false)
+        },
+
+
+    async fetchLocationById({ state, commit }, id) {
+        if(state.locations[id]) {
+            return state.locations[id]
         }
+
+        const res = await fetch(`https://rickandmortyapi.com/api/location/${id}`)
+        const data = await res.json()
+
+        commit('setLocation', data)
+
+        return data
+    }
     },
 
     getters: {

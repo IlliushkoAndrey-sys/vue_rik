@@ -16,7 +16,6 @@ const locations = computed (() => store.getters['locations/getLocationsArray'])
 const loading = computed(() => store.getters['locations/getIsLoading'])
 const totalPages = computed( () => store.getters['locations/getTotalPages'])
 
-console.log(locations)
 let debounceTimer = null
 
 function onSearchInput() {
@@ -83,9 +82,11 @@ onMounted(() => {
       <LocationCard
           v-for="location in locations"
           :key="location.id"
+          :id="location.id"
           :name="location.name"
           :residentsId="location.residents[0] ? Number(location.residents[0].split('/').pop()) : null"
           :type="location.type"
+          :page="currentPage"
       />
     </div>
 

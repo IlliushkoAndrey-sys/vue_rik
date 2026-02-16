@@ -17,6 +17,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  id: {
+    type: Number,
+    required: true,
+  },
+  page: {
+    type: Number,
+    required: true,
+  },
 })
 
 const residentImage = computed(() => {
@@ -36,14 +44,21 @@ const residentImage = computed(() => {
 </script>
 
 <template>
-<div class="location_card">
+  <RouterLink
+      :aria-label="`Відкрити карточку персонажа ${props.name}`"
+      :to="{
+      path: `/locations/${props.id}`,
+      query: { page: props.page }
+    }"
+      class="location_card"
+  >
   <div class="location_image">
     <img :src="residentImage" :alt="props.name">
 
   </div>
   <div class="location_name">{{props.name}}</div>
   <div class="location_type">{{props.type}}</div>
-</div>
+  </RouterLink>
 </template>
 
 <style scoped>
@@ -55,7 +70,9 @@ const residentImage = computed(() => {
   border: 1px solid #999;
   border-radius: 12px;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4)
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  text-decoration: none;
+  color: #333;
 }
 
 .location_card:hover {

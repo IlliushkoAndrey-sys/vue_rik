@@ -1,16 +1,28 @@
 <template>
-  <div class="character_card">
+  <RouterLink
+    :aria-label="`Відкрити карточку персонажа ${props.name}`"
+    :to="{
+      path: `/characters/${props.id}`,
+      query: { page: props.page }
+    }"
+    class="character_card"
+  >
+
     <div class="character_image">
-      <img :src="props.image" :alt="props.name">
+      <img :alt="props.name" :src="props.image">
 
     </div>
     <div class="character_name">{{props.name}}</div>
     <div class ="character_type">{{props.species}}</div>
-  </div>
+  </RouterLink>
 </template>
 
 <script setup>
 const props = defineProps({
+  id: {
+    type: Number,
+    required: true
+  },
   name: {
     type: String,
     required: true,
@@ -21,6 +33,10 @@ const props = defineProps({
   },
   species: {
     type: String,
+    required: true,
+  },
+  page: {
+    type: Number,
     required: true,
   },
 })
@@ -36,7 +52,9 @@ const props = defineProps({
   border: 1px solid #999;
   border-radius: 12px;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4)
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  text-decoration: none;
+  color: #333;
 }
 
 .character_card:hover {

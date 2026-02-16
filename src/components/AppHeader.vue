@@ -158,6 +158,13 @@ onBeforeUnmount(() => {
   color: #4CAF50;
 
 }
+.nav_link.router-link-active {
+  color: #4CAF50;
+}
+
+.nav_link.router-link-active:after {
+  opacity: 1;
+}
 
 @media (max-width: 1024px) {
   .header {

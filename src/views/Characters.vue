@@ -22,9 +22,12 @@
       <CharacterCard
           v-for="char in characters"
           :key="char.id"
+          :id="char.id"
           :name="char.name"
           :image="char.image"
           :species="char.species"
+          :page="currentPage"
+
       />
     </div>
 

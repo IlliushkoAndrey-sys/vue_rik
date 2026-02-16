@@ -33,7 +33,7 @@
           <div class="finder-inner">
             <input class="finder-input"
                    type="text"
-                   placeholder="Enter Location"
+                   placeholder="Enter Episode"
                    v-model="searchQuery"
                    @input="onSearchInput"
             />
