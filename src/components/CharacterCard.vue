@@ -3,7 +3,7 @@
     :aria-label="`Відкрити карточку персонажа ${props.name}`"
     :to="{
       path: `/characters/${props.id}`,
-      query: { page: props.page }
+      params: { page: props.page }
     }"
     class="character_card"
   >

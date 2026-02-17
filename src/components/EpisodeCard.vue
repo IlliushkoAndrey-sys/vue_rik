@@ -22,6 +22,9 @@ const props = defineProps({
 
 const characterImage = ref('/public/rick.png');
 
+const formatedToEorupenianDate = () =>
+    props.air_date ? dayjs(props.air_date).format('DD MMMM YYYY').toLowerCase() : 'невідомо'
+
 onMounted(async () => {
   if (!props.charactersId) return
 
@@ -42,7 +45,7 @@ onMounted(async () => {
   </div>
   <div class="smallcard_title">{{props.name}}</div>
     <div class="smallcard_text">
-    {{ props.air_date ? dayjs(props.air_date).format('DD MMMM YYYY').toLowerCase() : 'невідомо' }}
+    {{ formatedToEorupenianDate() }}
   </div>
 
   </div>

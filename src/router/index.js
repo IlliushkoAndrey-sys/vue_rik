@@ -4,9 +4,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Characters from '@/views/Characters.vue'
 import Locations from '@/views/Locations.vue'
 import Episodes from '@/views/Episodes.vue'
-import CharacterDetails from '@/components/CharacterDetails.vue'
-import LocationDetails from '@/components/LocationDetails.vue'
-
+import CharacterDetails from '@/views/CharacterDetails.vue'
+import LocationDetails from '@/views/LocationDetails.vue'
+import NotFoundPage from "@/views/NotFoundPage.vue";
 
 
 const routes = [
@@ -23,6 +23,16 @@ const routes = [
         path: '/characters/:id',
         name: 'character-details',
         component: CharacterDetails,
+        beforeEnter:(to, from, next) => {
+            const id = Number(to.params.id)
+
+
+            if(!Number.isInteger(id) || id <= 0) {
+                next(`/404`)
+            } else {
+                next()
+            }
+        },
         props: true
 
     },
@@ -40,7 +50,15 @@ const routes = [
             page: Number(route.query.page) || 1,
             search: route.query.search || ''
         }) },
-    { path: '/episodes', component: Episodes },
+    {
+        path: '/episodes',
+        component: Episodes
+    },
+
+    {
+        path: '/404',
+        component: NotFoundPage
+    }
 ]
 
 const router = createRouter({

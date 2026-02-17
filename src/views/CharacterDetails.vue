@@ -4,14 +4,11 @@
   <div v-if="character" class="details">
     <div class="imageAndButton">
     <img :src="character.image" />
-      <RouterLink
+      <button
           :aria-label="`Повернутись`"
-          :to="{
-            path: '/characters',
-            query: { page }
-          }"
+          @click="goBack"
           class="backBtn"
-      >Back</RouterLink>
+      >Back</button>
       </div>
     <h1>{{ character.name }}</h1>
 
@@ -32,13 +29,19 @@
 <script setup>
 import { onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const store = useStore()
 const route = useRoute()
+const router = useRouter()
 
-const page = computed(() => Number(route.query.page) || 1)
-
+const goBack = () => {
+  if (router.options.history.state.back) {
+    router.back()
+  } else {
+    router.push('/characters')
+  }
+}
 
 const loading = computed(() => store.getters['characters/getIsLoading'])
 
@@ -46,9 +49,22 @@ const character = computed(() =>
     store.state.characters.characters.get(Number(route.params.id))
 )
 
-onMounted(() => {
-  if (!character.value) {
-    store.dispatch('characters/fetchCharacterById', route.params.id)
+onMounted(async () => {
+  // Якщо персонаж вже є у store, перевіряємо його валідність
+  if (character.value) {
+    return
+  }
+
+  // Якщо немає — робимо fetch
+  try {
+    const data = await store.dispatch('characters/fetchCharacterById', id)
+
+    // Якщо API нічого не повернув або повернув 404
+    if (!data || !data.id) {
+      router.replace('/404')
+    }
+  } catch (e) {
+    router.replace('/404')
   }
 })
 </script>
@@ -64,6 +80,7 @@ onMounted(() => {
   border-radius: 12px;
   border: 1px solid #ccc;
   text-decoration: none;
+  cursor: pointer;
   text-align: center;
   align-content: center;
   color: #333;
