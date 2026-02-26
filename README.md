@@ -25,6 +25,21 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
+### Mock Auth Middleware
+
+Enable the student mock auth flow by exporting `VITE_USE_MOCK_AUTH=true` before `npm run dev`. The Vite dev server will:
+- expose helper endpoints (`POST /mock-auth/token`, `/mock-auth/refresh`, `/mock-auth/logout`, `/mock-auth/protected`)
+- inject `x-student-auth-token` into every API response and reject `/api` requests without it
+- expire tokens after 50 seconds, returning `401` with `mock_auth_token_expired`
+
+Clients should fetch `/mock-auth/token` on load, reuse the header, and call `/mock-auth/refresh` when they receive a 401.
+
+Manual test checklist:
+1. Start dev server with mock auth enabled and call `/mock-auth/token`; confirm header + expiry timestamp arrive.
+2. Hit any `/api` route with the header and observe success.
+3. Wait 50 seconds without refreshing; repeat the call and confirm a `401` with the same header value.
+4. Call `/mock-auth/refresh` and retry the API call to ensure the new token works.
+
 ### Compile and Hot-Reload for Development
 
 ```sh
