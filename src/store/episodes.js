@@ -1,40 +1,78 @@
+import api from './api';
+
+let abortController = null;
+
 export const episodesModule = {
     namespaced: true,
+
     state: () => ({
         episodes: [],
         loading: false,
     }),
+
     getters: {
         seasons(state) {
             return state.episodes.reduce((acc, ep) => {
                 const match = ep.episode.match(/S(\d+)/);
                 if (!match) return acc;
+
                 const season = match[1];
+
                 if (!acc[season]) acc[season] = [];
                 acc[season].push(ep);
+
                 return acc;
             }, {});
         },
     },
+
     mutations: {
-        setLoading(state, value) { state.loading = value; },
-        appendEpisodes(state, episodes) { state.episodes.push(...episodes); },
+        setLoading(state, value) {
+            state.loading = value;
+        },
+
+        appendEpisodes(state, episodes) {
+            state.episodes.push(...episodes);
+        },
+
+        clearEpisodes(state) {
+            state.episodes = [];
+        }
     },
+
     actions: {
         async fetchAllEpisodes({ state, commit }) {
             if (state.episodes.length) return;
 
+            if (abortController) abortController.abort();
+            abortController = new AbortController();
+
             commit('setLoading', true);
-            let url = 'https://rickandmortyapi.com/api/episode';
+            commit('clearEpisodes');
 
-            while (url) {
-                const res = await fetch(url);
-                const data = await res.json();
-                commit('appendEpisodes', data.results);
-                url = data.info.next;
+            try {
+                let nextPage = 1;
+
+                while (nextPage) {
+                    const { data } = await api.get('episode', {
+                        params: { page: nextPage },
+                        signal: abortController.signal,
+                    });
+
+                    commit('appendEpisodes', data.results || []);
+
+                    nextPage = data.info?.next
+                        ? new URL(data.info.next).searchParams.get('page')
+                        : null;
+                }
+
+            } catch (err) {
+                if (err.name !== 'CanceledError') {
+                    console.error('Episodes fetch error:', err);
+                }
+            } finally {
+                commit('setLoading', false);
             }
-
-            commit('setLoading', false);
         },
     },
 };

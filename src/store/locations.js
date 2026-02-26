@@ -1,3 +1,7 @@
+import api from './api';
+
+let abortController = null;
+
 const moduleLocations = {
     namespaced: true,
 
@@ -23,8 +27,8 @@ const moduleLocations = {
         },
 
         setTotalLocations(state, total) {state.totalLocations = total},
-        setCache(state, { apiPage, searchKey, data })  {
-            state.locationsCache.set(`${apiPage}_${searchKey}`, data)
+        setCache(state, { key, data }) {
+            state.locationsCache.set(key, data)
         },
         clearCache(state) {
             state.locationsCache.clear()
@@ -34,6 +38,9 @@ const moduleLocations = {
     actions: {
 
         async fetchLocations({ state, commit}, {page = 1, search = ''}) {
+            if(abortController) abortController.abort();
+            abortController = new AbortController();
+
             commit('setLoading', true)
 
             if (page === 1) {
@@ -51,13 +58,17 @@ const moduleLocations = {
 
             if (!state.locationsCache.has(cacheKey)) {
                 try {
-                    const res = await fetch(`https://rickandmortyapi.com/api/location?page=${neededApiPage}${searchKey ? `&name=${searchKey}` : ''}`)
-                    const data = await res.json()
-                    commit('setTotalLocations', data.info?.count || 0)
-                    commit('setCache', {apiPage: neededApiPage, searchKey, data: data.results || []})
-                } catch {
-                    commit('setCache', {apiPage: neededApiPage, searchKey, data: []})
-                    commit('setTotalLocations', 0)
+                    const {data} = await api.get('location', {
+                        params: {page: neededApiPage, name: search},
+                        signal: abortController.signal,
+                    });
+
+                    commit('setTotalLocations', data.info?.count || 0);
+                    commit('setCache', {key: cacheKey, data: data.results || []});
+                } catch (err) {
+                        if (err.name === 'CanceledError') return;
+                        commit('setCache', { key: cacheKey, data: [] })
+                        commit('setTotalLocations', 0)
                 }
             }
 
@@ -72,16 +83,17 @@ const moduleLocations = {
 
 
     async fetchLocationById({ state, commit }, id) {
-        if(state.locations[id]) {
-            return state.locations[id]
+        if(state.locations.has(id)) {
+            return state.locations.get(id)
         }
 
-        const res = await fetch(`https://rickandmortyapi.com/api/location/${id}`)
-        const data = await res.json()
-
-        commit('setLocation', data)
-
-        return data
+        try {
+            const {data} = await api.get(`location/${id}`);
+            commit ('setLocation', data);
+            return data;
+        } catch {
+            return null;
+        }
     }
     },
 

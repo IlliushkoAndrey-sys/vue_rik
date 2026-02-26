@@ -17,7 +17,10 @@ onMounted(async () => {
 <template>
 <div class="container">
   <div class="not-found">
-    <h1>Введеної сторінки не існує</h1>
+    <div class="not-foundAndButton">
+      <h1>Введеної сторінки не існує</h1>
+      <router-link to="/characters" class="backBtn">Back to Characters</router-link>
+    </div>
     <p>Але тут є рандомний мем</p>
     <img v-if="memeUrl" :src="memeUrl" alt="Random Rocket Meme" />
     <p v-else>Завантаження...</p>
@@ -32,7 +35,21 @@ onMounted(async () => {
   margin-top: 40px;
 }
 .not-found>img {
-  width: 100vh;
+  margin-top: 10px;
+  width: 70vh;
   height: 100%
+}
+.not-foundAndButton {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.backBtn {
+  text-decoration: none;
+  align-content: center;
+  padding: 2px 4px;
+  border-radius: 6px;
+  border: 1px solid #999999;
+  color: #333;
 }
 </style>

@@ -1,3 +1,7 @@
+import api from './api';
+
+let abortController = null;
+
 const moduleCharacters = {
     namespaced: true,
 
@@ -23,8 +27,8 @@ const moduleCharacters = {
         },
 
         setTotalCharacters(state, total) { state.totalCharacters = total },
-        setCache(state, { apiPage, searchKey, data }) {
-            state.charactersCache.set(`${apiPage}_${searchKey}`, data)
+        setCache(state, { key, data }) {
+            state.charactersCache.set(key, data)
         },
         clearCache(state) {
             state.charactersCache.clear()
@@ -34,6 +38,9 @@ const moduleCharacters = {
     actions: {
 
         async fetchCharacters({ state, commit },{page= 1, search = ''}) {
+            if(abortController) abortController.abort();
+            abortController = new AbortController();
+
             commit('setLoading', true)
 
             if (page === 1) {
@@ -50,17 +57,21 @@ const moduleCharacters = {
 
             if (!state.charactersCache.has(cacheKey)) {
                 try {
-                    const res = await fetch(`https://rickandmortyapi.com/api/character?page=${neededApiPage}${searchKey ? `&name=${searchKey}` : ''}`)
-                    const data = await res.json()
-                    commit('setTotalCharacters', data.info?.count || 0)
-                    commit('setCache', { apiPage: neededApiPage, searchKey, data: data.results || [] })
-                } catch {
-                    commit('setCache', { apiPage: neededApiPage, searchKey, data: [] })
+                    const {data} = await api.get('character', {
+                        params: {page: neededApiPage, name: search},
+                        signal: abortController.signal,
+                    });
+
+                    commit('setTotalCharacters', data.info?.count || 0);
+                    commit('setCache', {key: cacheKey, data: data.results || []});
+                } catch(err) {
+                    if (err.name === 'CanceledError') return;
+                    commit('setCache', { key: cacheKey, data: [] })
                     commit('setTotalCharacters', 0)
                 }
             }
 
-            const apiData = state.charactersCache.get(cacheKey) || []
+            const apiData = state.charactersCache.get(cacheKey) || [];
 
             const start = ((page - 1) * perPage) % apiPerPage
             const end = start + perPage
@@ -70,16 +81,17 @@ const moduleCharacters = {
         },
 
         async fetchCharacterById({ state, commit }, id) {
-            if (state.characters[id]) {
-                return state.characters[id]
+            if (state.characters.has(id)) {
+                return state.characters.get(id);
             }
 
-            const res = await fetch(`https://rickandmortyapi.com/api/character/${id}`)
-            const data = await res.json()
-
-            commit('setCharacter', data)
-
-            return data
+            try {
+                const {data} = await api.get(`character/${id}`);
+                commit ('setCharacter', data);
+                    return data;
+                } catch {
+                return null;
+            }
         }
     },
 
