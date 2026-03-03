@@ -32,6 +32,15 @@
     </div>
 
   </div>
+  <router-view v-slot="{ Component }">
+    <transition name="fade">
+      <div v-if="Component" class="modal-overlay">
+        <div class="modal-content">
+          <component :is="Component" />
+        </div>
+      </div>
+    </transition>
+  </router-view>
   <Pagination
       :current-page="currentPage"
       :total-pages="totalPages"
@@ -143,6 +152,27 @@ onMounted(() => {
   border: 1px solid #999;
 }
 
+.modal-overlay {
+  margin-top:145px;
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #f5f6f7 ;
+  padding: 20px;
+  border-radius: 12px;
+  width: 1410px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
 @media (max-width: 1024px) {
   .characters_inner {
     display: grid;

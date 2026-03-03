@@ -50,16 +50,13 @@ const character = computed(() =>
 )
 
 onMounted(async () => {
-  // Якщо персонаж вже є у store, перевіряємо його валідність
   if (character.value) {
     return
   }
 
-  // Якщо немає — робимо fetch
   try {
-    const data = await store.dispatch('characters/fetchCharacterById', id)
+    const data = await store.dispatch('characters/fetchCharacterById', route.params.id)
 
-    // Якщо API нічого не повернув або повернув 404
     if (!data || !data.id) {
       router.replace('/404')
     }

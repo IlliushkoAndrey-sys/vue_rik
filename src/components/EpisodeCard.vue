@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import dayjs from 'dayjs';
 import { useStore } from 'vuex';
 
@@ -22,8 +22,8 @@ const props = defineProps({
 
 const characterImage = ref('/public/rick.png');
 
-const formatedToEorupenianDate = () =>
-    props.air_date ? dayjs(props.air_date).format('DD MMMM YYYY').toLowerCase() : 'невідомо'
+const formattedToEuropeanDate = computed( () =>
+    props.air_date ? dayjs(props.air_date).format('DD MMMM YYYY').toLowerCase() : 'невідомо')
 
 onMounted(async () => {
   if (!props.charactersId) return
@@ -45,7 +45,7 @@ onMounted(async () => {
   </div>
   <div class="smallcard_title">{{props.name}}</div>
     <div class="smallcard_text">
-    {{ formatedToEorupenianDate() }}
+    {{ formattedToEuropeanDate }}
   </div>
 
   </div>

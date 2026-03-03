@@ -18,6 +18,8 @@
               >
                 {{ link.title }}
               </RouterLink>
+              <button @click="handleLogout">Logout</button>
+
             </nav>
           </div>
         </div>
@@ -28,7 +30,16 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 
+const router = useRouter()
+const { logout } = useAuth()
+
+const handleLogout = async () => {
+  await logout()
+  router.push('/login')
+}
 const isOpen = ref(false);
 
 const links = [
@@ -98,6 +109,7 @@ onBeforeUnmount(() => {
 
 .nav {
   display: flex;
+  align-items: center;
   width: 100%;
   order: 2;
   font-size: 24px;
@@ -145,6 +157,8 @@ onBeforeUnmount(() => {
 
 }
 
+
+
 .nav_link:hover {
   color: #4CAF50;
 
@@ -166,6 +180,23 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
+button {
+  width: 120px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: center;
+  align-content: center;
+  color: #333;
+}
+button:hover {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+
+}
 @media (max-width: 1024px) {
   .header {
     padding: 10px;
