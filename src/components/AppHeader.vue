@@ -18,7 +18,7 @@
               >
                 {{ link.title }}
               </RouterLink>
-              <button @click="handleLogout">Logout</button>
+              <button class="logout" @click="handleLogout">Logout</button>
 
             </nav>
           </div>
@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
-button {
+.logout {
   width: 120px;
   height: 40px;
   border-radius: 12px;
@@ -191,7 +191,7 @@ button {
   align-content: center;
   color: #333;
 }
-button:hover {
+.logout:hover {
   background-color: #4CAF50;
   border: none;
   color: white;

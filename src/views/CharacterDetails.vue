@@ -71,6 +71,10 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
 }
+.imageAndButton img {
+  width: 270px;
+  height: 270px;
+}
 .backBtn {
   width: 120px;
   height: 40px;
@@ -81,6 +85,10 @@ onMounted(async () => {
   text-align: center;
   align-content: center;
   color: #333;
+}
+.backBtn:hover {
+  background-color: #4CAF50;
+  color: white;
 }
 .character--details{
   margin-top: 40px;
