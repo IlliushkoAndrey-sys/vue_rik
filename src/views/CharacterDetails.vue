@@ -33,7 +33,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 const store = useStore()
 const route = useRoute()
-const router = useRouter()
+  const router = useRouter()
 
 const goBack = () => {
   if (router.options.history.state.back) {
