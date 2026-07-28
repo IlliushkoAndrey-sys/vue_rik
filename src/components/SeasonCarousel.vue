@@ -1,7 +1,7 @@
 <script setup>
 import EpisodeCard from '@/components/EpisodeCard.vue'
 import useEmblaCarousel from 'embla-carousel-vue'
-import { ref, onMounted,computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import LazyWrapper from '@/components/LazyWrapper.vue'
 
 
@@ -45,21 +45,13 @@ onMounted(() => {
   <div class="embla">
     <div ref="emblaRef" class="embla__viewport">
       <div class="embla__container">
-        <div
-            v-for="episode in episodes"
-            :key="episode.id"
-            class="embla__slide"
-        >
+        <div v-for="episode in episodes" :key="episode.id" class="embla__slide">
           <LazyWrapper :root="emblaRef">
-            <EpisodeCard
-                :name="episode.name"
-                :air_date="episode.air_date"
-                :characters-id="episode.characters?.length ? Number(episode.characters[Math.floor(Math.random() * episode.characters.length)
+            <EpisodeCard :name="episode.name" :air_date="episode.air_date" :characters-id="episode.characters?.length ? Number(episode.characters[Math.floor(Math.random() * episode.characters.length)
             ].split('/').pop()
-          )
-        : null
-    "
-            />
+            )
+              : null
+              " />
           </LazyWrapper>
         </div>
       </div>
@@ -85,9 +77,10 @@ onMounted(() => {
 
 .embla__slide {
   flex: 0 0 auto;
-  width: 284px;
+  width: 274px;
   padding-right: 20px;
 }
+
 .embla__slide:last-child {
   padding-right: 0;
   width: 264px;
@@ -99,7 +92,7 @@ onMounted(() => {
   top: 45%;
   transform: translateY(-50%);
   z-index: 2;
-  border:none;
+  border: none;
   color: #4CAF50;
   font-size: 30px;
   background: none;
@@ -111,13 +104,14 @@ onMounted(() => {
   border-radius: 50%;
 
 }
-.embla__prev:hover {
-}
+
+.embla__prev:hover {}
 
 .embla__prev:disabled {
   color: #999999;
   cursor: not-allowed;
 }
+
 .embla__next:disabled {
   color: #999999;
   cursor: not-allowed;
@@ -128,6 +122,7 @@ onMounted(() => {
   right: -40px;
   border-radius: 50%;
 }
+
 @media (max-width: 1024px) {
   .embla {
     position: relative;
@@ -146,15 +141,18 @@ onMounted(() => {
     width: 242px;
     padding-right: 20px;
   }
+
   .embla__slide:last-child {
     padding-right: 0;
     width: 222px;
   }
+
   .embla__prev {
     left: -25px;
     border-radius: 50%;
 
   }
+
   .embla__next {
     right: -25px;
     border-radius: 50%;
@@ -163,21 +161,25 @@ onMounted(() => {
 
 
 }
+
 @media (max-width: 500px) {
   .embla__slide {
     flex: 0 0 auto;
-    width: 326px;
+    width: 356px;
     padding-right: 20px;
   }
+
   .embla__slide:last-child {
     padding-right: 0;
-    width: 306px;
+    width: 336px;
   }
+
   .embla__prev {
     left: -25px;
     border-radius: 50%;
 
   }
+
   .embla__next {
     right: -25px;
     border-radius: 50%;

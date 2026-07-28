@@ -1,28 +1,27 @@
 <template>
   <div class="container">
-  <div class="character--details">
-  <div v-if="character" class="details">
-    <div class="imageAndButton">
-    <img :src="character.image" />
-      <button
-          :aria-label="`Повернутись`"
-          @click="goBack"
-          class="backBtn"
-      >Back</button>
+    <div class="character--details">
+      <div v-if="character" class="details">
+        <div class="imageAndButton">
+          <img :src="character.image" />
+          <RouterLink :aria-label="`Повернутись`" :to="{
+            path: `/characters`,
+            query: { page }
+          }" class="backBtn">Back</RouterLink>
+        </div>
+        <h1>{{ character.name }}</h1>
+
+        <ul>
+          <li><b>Status life:</b> {{ character.status }}</li>
+          <li><b>Species:</b> {{ character.species }}</li>
+          <li><b>Gender:</b> {{ character.gender }}</li>
+          <li><b>Origin location:</b> {{ character.origin.name }}</li>
+          <li><b>First location seen:</b> {{ character.location.name }}</li>
+        </ul>
       </div>
-    <h1>{{ character.name }}</h1>
 
-    <ul>
-      <li><b>Status life:</b> {{ character.status }}</li>
-      <li><b>Species:</b> {{ character.species }}</li>
-      <li><b>Gender:</b> {{ character.gender }}</li>
-      <li><b>Origin location:</b> {{ character.origin.name }}</li>
-      <li><b>First location seen:</b> {{ character.location.name }}</li>
-    </ul>
-  </div>
-
-  <div v-else-if="loading">Loading...</div>
-  </div>
+      <div v-else-if="loading">Loading...</div>
+    </div>
   </div>
 </template>
 
@@ -33,7 +32,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 const store = useStore()
 const route = useRoute()
-  const router = useRouter()
+const router = useRouter()
 
 const goBack = () => {
   if (router.options.history.state.back) {
@@ -46,7 +45,7 @@ const goBack = () => {
 const loading = computed(() => store.getters['characters/getIsLoading'])
 
 const character = computed(() =>
-    store.state.characters.characters.get(Number(route.params.id))
+  store.state.characters.characters.get(Number(route.params.id))
 )
 
 onMounted(async () => {
@@ -71,10 +70,12 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
 }
+
 .imageAndButton img {
   width: 270px;
   height: 270px;
 }
+
 .backBtn {
   width: 120px;
   height: 40px;
@@ -86,28 +87,33 @@ onMounted(async () => {
   align-content: center;
   color: #333;
 }
+
 .backBtn:hover {
   background-color: #4CAF50;
   color: white;
 }
-.character--details{
+
+.character--details {
+  width: 100%;
   margin-top: 40px;
   padding: 10px 5px;
   border: 1px solid #ccc;
   border-radius: 12px;
+  box-sizing: border-box;
 }
 
 .details>h1 {
   padding: 15px 0px;
 }
+
 ul {
   margin: 0;
   padding: 0;
 }
+
 li {
   list-style-type: none;
   margin-top: 5px;
 
 }
-
 </style>

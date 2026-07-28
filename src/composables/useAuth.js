@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import apiMock from '../store/apiMock.js'
 
 const token = ref(localStorage.getItem('auth_token') || null)
@@ -20,7 +20,7 @@ export function useAuth() {
         }
     }
 
-    const isAuthenticated = () => !!token.value
+    const isAuthenticated = computed(() => !!token.value)
 
     return { token, login, logout, isAuthenticated }
 }

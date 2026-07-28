@@ -1,41 +1,11 @@
 <template>
   <div class="container">
     <div class="charactersPlusFinder">
-    <h1>Characters</h1>
+      <h1>Characters</h1>
 
-    <!-- Пошук -->
-    <div class="finder-inner">
-      <input class="finder-input"
-          type="text"
-          placeholder="Character Name"
-          v-model="searchQuery"
-          @input="onSearchInput"
-      />
-    </div>
-    </div>
-
-    <div class="animation-controls">
-      <h3>Set animation for modal card</h3>
-      <div class="button-group">
-        <button
-            :class="{ 'active-btn': transitionName === 'fade' }"
-            @click="setAnimation('fade')"
-        >Opacity</button>
-
-        <button
-            :class="{ 'active-btn': transitionName === 'slide-left' }"
-            @click="setAnimation('slide-left')"
-        >Left</button>
-
-        <button
-            :class="{ 'active-btn': transitionName === 'slide-right' }"
-            @click="setAnimation('slide-right')"
-        >Right</button>
-
-        <button
-            :class="{ 'active-btn': transitionName === 'zoom' }"
-            @click="setAnimation('zoom')"
-        >Zoom</button>
+      <div class="finder-inner">
+        <input class="finder-input" type="text" placeholder="Character Name" v-model="searchQuery"
+          @input="onSearchInput" />
       </div>
     </div>
 
@@ -44,16 +14,8 @@
       Нічого не знайдено
     </div>
     <div class="characters_inner">
-      <CharacterCard
-          v-for="char in characters"
-          :key="char.id"
-          :id="char.id"
-          :name="char.name"
-          :image="char.image"
-          :species="char.species"
-          :page="currentPage"
-
-      />
+      <CharacterCard v-for="char in characters" :key="char.id" :id="char.id" :name="char.name" :image="char.image"
+        :species="char.species" :page="currentPage" />
     </div>
 
   </div>
@@ -66,16 +28,12 @@
       </div>
     </transition>
   </router-view>
-  <Pagination
-      :current-page="currentPage"
-      :total-pages="totalPages"
-      @update:page="changePage"
-  />
+  <Pagination :current-page="currentPage" :total-pages="totalPages" @update:page="changePage" />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import {useRoute, useRouter} from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import CharacterCard from '../components/CharacterCard.vue'
 import Pagination from '../components/Pagination.vue'
@@ -84,8 +42,8 @@ const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
-const currentPage = ref(Number(route.query.page) ||1)
-const searchQuery = ref(route.query.search ||'')
+const currentPage = ref(Number(route.query.page) || 1)
+const searchQuery = ref(route.query.search || '')
 
 const characters = computed(() => store.getters['characters/getCharactersArray'])
 const loading = computed(() => store.getters['characters/getIsLoading'])
@@ -98,7 +56,6 @@ function setAnimation(type) {
 }
 
 
-// Пошуковий запит з debounce
 let debounceTimer = null
 
 function onSearchInput() {
@@ -136,7 +93,6 @@ function changePage(page) {
   })
 }
 
-// Fetch першої сторінки при завантаженні
 onMounted(() => {
   store.dispatch('characters/fetchCharacters', {
     page: currentPage.value,
@@ -150,6 +106,7 @@ onMounted(() => {
 .container {
   height: 820px;
 }
+
 .charactersPlusFinder {
   display: flex;
   justify-content: space-between;
@@ -157,6 +114,7 @@ onMounted(() => {
   margin-bottom: 20px;
   align-items: center;
 }
+
 .characters_inner {
   display: grid;
   grid-template-columns: repeat(5, 2fr);
@@ -184,76 +142,27 @@ onMounted(() => {
 }
 
 .modal-overlay {
-  margin-top:145px;
+  margin-top: 145px;
   position: fixed;
   inset: 0;
-
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-
-
+  overflow-y: auto;
   z-index: 1000;
 }
 
 .modal-content {
-  background: #f5f6f7 ;
+  background: #f5f6f7;
   padding: 20px;
   border-radius: 12px;
-  width: 1410px;
+  width: min(1410px, calc(100vw - 40px));
+  max-width: calc(100vw - 40px);
   max-height: 90vh;
   overflow-y: auto;
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
 
-.slide-left-enter-active, .slide-left-leave-active {
-  transition: all 0.5s ease-out;
-}
-.slide-left-enter-from {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-.slide-left-leave-to {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
-.slide-right-enter-active, .slide-right-leave-active {
-  transition: all 0.5s ease-out;
-}
-.slide-right-enter-from {
-  transform: translateX(100%);
-  opacity: 0;
-}
-.slide-right-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.zoom-enter-active, .zoom-leave-active {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.zoom-enter-from, .zoom-leave-to {
-  transform: scale(0.5);
-  opacity: 0;
-}
-
-.animation-controls {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
 
 .button-group button {
   padding: 10px 20px;
@@ -263,6 +172,7 @@ onMounted(() => {
   border-radius: 8px;
   transition: all 0.3s ease;
 }
+
 .button-group button:hover {
   background-color: #4CAF50;
   cursor: pointer;
@@ -289,29 +199,34 @@ onMounted(() => {
     gap: 20px;
     margin-top: 20px;
   }
+
   .container {
     padding: 10px;
     height: 1400px;
   }
 
 }
+
 @media (max-width: 500px) {
 
   .container {
     padding: 10px;
     height: 1800px;
   }
+
   .characters_inner {
     display: grid;
     grid-template-columns: repeat(2, 2fr);
     gap: 20px;
     margin-top: 20px;
   }
+
   .charactersPlusFinder {
     display: flex;
     flex-direction: column;
 
   }
+
   h1 {
     padding-bottom: 10px;
   }

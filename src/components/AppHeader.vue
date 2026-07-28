@@ -9,16 +9,10 @@
             <button class="nav-btn" :class="{ active: isOpen }" @click="toggleMenu"></button>
 
             <nav class="nav">
-              <RouterLink
-                  v-for="link in links"
-                  :key="link.path"
-                  :to="link.path"
-                  class="nav_link"
-                  @click="closeMenu"
-              >
+              <RouterLink v-for="link in links" :key="link.path" :to="link.path" class="nav_link" @click="closeMenu">
                 {{ link.title }}
               </RouterLink>
-              <button class="logout" @click="handleLogout">Logout</button>
+              <button v-if="isAuthenticated" class="logout" @click="handleLogout">Logout</button>
 
             </nav>
           </div>
@@ -34,7 +28,7 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 
 const router = useRouter()
-const { logout } = useAuth()
+const { logout, isAuthenticated } = useAuth()
 
 const handleLogout = async () => {
   await logout()
@@ -73,7 +67,6 @@ onBeforeUnmount(() => {
 
 </script>
 <style>
-
 .header {
   width: 100%;
   background-color: #203040;
@@ -96,7 +89,6 @@ onBeforeUnmount(() => {
 
 .header_inner {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: anchor-center;
   padding: 50px 0;
@@ -115,12 +107,15 @@ onBeforeUnmount(() => {
   font-size: 24px;
 
 }
+
 .nav-btn {
   display: none;
 }
+
 .nav-btn::before {
   content: "☰";
 }
+
 .nav-btn.active::before {
   content: "✕";
 }
@@ -153,7 +148,7 @@ onBeforeUnmount(() => {
   left: 0;
   z-index: 1;
 
-  transition: opacity  .2s linear;
+  transition: opacity .2s linear;
 
 }
 
@@ -164,7 +159,8 @@ onBeforeUnmount(() => {
 
 }
 
-.nav_link:hover:after, .nav_link.active:after {
+.nav_link:hover:after,
+.nav_link.active:after {
   opacity: 1;
 }
 
@@ -172,6 +168,7 @@ onBeforeUnmount(() => {
   color: #4CAF50;
 
 }
+
 .nav_link.router-link-active {
   color: #4CAF50;
 }
@@ -191,12 +188,14 @@ onBeforeUnmount(() => {
   align-content: center;
   color: #333;
 }
+
 .logout:hover {
   background-color: #4CAF50;
   border: none;
   color: white;
 
 }
+
 @media (max-width: 1024px) {
   .header {
     padding: 10px;
