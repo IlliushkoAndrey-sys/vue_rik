@@ -1,0 +1,115 @@
+import api from './api';
+
+let abortController = null;
+
+const moduleLocations = {
+    namespaced: true,
+
+    state: () => ({
+        locationsCache: new Map(),
+        locations: new Map(),
+        loading: false,
+        totalLocations: 0,
+        perPage: 10,
+        apiPerPage: 20,
+    }),
+
+    mutations: {
+        setLoading(state, value) {state.loading = value},
+
+        setLocations(state, locationsArray) {
+            const map = new Map()
+            locationsArray.forEach(location => map.set(location.id, location))
+            state.locations = map
+        },
+        setLocation(state, location) {
+            state.locations.set(location.id, location)
+        },
+
+        setTotalLocations(state, total) {state.totalLocations = total},
+        setCache(state, { key, data }) {
+            state.locationsCache.set(key, data)
+        },
+        clearCache(state) {
+            state.locationsCache.clear()
+        }
+    },
+
+    actions: {
+
+        async fetchLocations({ state, commit}, {page = 1, search = ''}) {
+            if(abortController) abortController.abort();
+            abortController = new AbortController();
+
+            commit('setLoading', true)
+
+            if (page === 1) {
+                commit('clearCache')
+            }
+
+            const perPage = state.perPage
+            const apiPerPage = state.apiPerPage
+            const searchKey = search ? encodeURIComponent(search) : ''
+
+            const neededApiPage = Math.ceil((page * perPage) / apiPerPage)
+
+
+            const cacheKey = `${neededApiPage}_${searchKey}`
+
+            if (!state.locationsCache.has(cacheKey)) {
+                try {
+                    const {data} = await api.get('location', {
+                        params: {page: neededApiPage, name: search},
+                        signal: abortController.signal,
+                    });
+
+                    commit('setTotalLocations', data.info?.count || 0);
+                    commit('setCache', {key: cacheKey, data: data.results || []});
+                } catch (err) {
+                        if (err.name === 'CanceledError') return;
+                        commit('setCache', { key: cacheKey, data: [] })
+                        commit('setTotalLocations', 0)
+                }
+            }
+
+            const apiData = state.locationsCache.get(cacheKey) || []
+
+            const start = ((page - 1) * perPage) % apiPerPage
+            const end = start + perPage
+
+            commit('setLocations', apiData.slice(start, end))
+            commit('setLoading', false)
+        },
+
+
+    async fetchLocationById({ state, commit }, id) {
+        if(state.locations.has(id)) {
+            return state.locations.get(id)
+        }
+
+        try {
+            const {data} = await api.get(`location/${id}`);
+            commit ('setLocation', data);
+            return data;
+        } catch {
+            return null;
+        }
+    }
+    },
+
+    getters: {
+        getLocationsArray(state) {
+            return Array.from(state.locations.values())
+        },
+
+        getIsLoading(state) {return state.loading },
+
+        getTotalPages(state) {
+            return Math.ceil( state.totalLocations / state.perPage)
+        }
+
+
+    }
+}
+
+export default moduleLocations
